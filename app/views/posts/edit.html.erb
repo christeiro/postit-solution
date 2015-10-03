@@ -1,5 +1,5 @@
-<h3> Edit post </h3>
+<%= render 'shared/content_title', title: 'Edit Posts' %>
 
-<%= render :partial => 'errors' %>
+<%= render 'shared/errors', errors: @post.errors %>
 
-<%= render :partial => 'form' %>
+<%= render 'form' %>

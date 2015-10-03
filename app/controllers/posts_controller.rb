@@ -1,34 +1,34 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update]
-  
   def index
     @posts = Post.all
   end
 
-  def show
-  end
-
-  def new
-    @post = Post.new()
-  end
-
   def create
     @post = Post.new(post_params)
+    @post.creator = User.first # TODO once we have authentication
     if @post.save
-      redirect_to posts_path
-      flash[:notice] = 'Post successfully created'
+      flash[:notice] = 'Your post was successfully created!'
+      redirect_to :posts
     else
       render 'new'
     end
   end
 
+  def new
+    @post = Post.new
+  end
+
   def edit
+  end
+
+  def show
   end
 
   def update
     if @post.update(post_params)
-      flash[:notice] = 'Post successfully updated'
-      redirect_to posts_path
+      flash[:notice] = 'Your post was successfully updated'
+      redirect_to :post
     else
       render 'edit'
     end
@@ -36,10 +36,11 @@ class PostsController < ApplicationController
 
   private 
   def post_params
-    params.require(:post).permit( :title, :url, :description )
+    params.require(:post).permit(:title, :url, :description)
   end
 
   def set_post
     @post = Post.find(params[:id])
   end
+
 end
