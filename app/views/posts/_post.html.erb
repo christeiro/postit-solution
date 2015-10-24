@@ -1,10 +1,25 @@
 <div class="row">
+  <div class="span0 well text-center">
+    <% if logged_in? %>
+      <%= link_to (vote_post_path(post, vote: true)), method: 'post' do %>
+        <li class="icon-arrow-up"></li>
+      <% end %>
+      <br/>
+    <% end %>
+    <span><%= post.total_votes %></span>
+    <% if logged_in? %>
+      <br/>
+      <%= link_to (vote_post_path(post, vote: false)), method: 'post' do %>
+        <li class="icon-arrow-down"></li>
+      <% end %>
+    <% end %>
+  </div>
   <div class="span8 well">
     <%= render post.categories %>
     <h4><%= link_to post.title, fix_url(post.url) %></h4>
     <p><%= post.description %></p>
     <p>
-      <span class='quiet'>posted by</span> <%= post.creator.username %>
+      <span class='quiet'>posted by</span> <%= link_to post.creator.username, user_path(post.creator) %>
       <small><%= format_date(post.created_at) %></small>
     </p>
     <small>
