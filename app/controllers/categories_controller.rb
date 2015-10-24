@@ -9,7 +9,7 @@ class CategoriesController < ApplicationController
     @category = Category.new(category_params)
     if @category.save
       flash[:notice] = 'Category created!'
-      redirect_to :root_path
+      redirect_to :root
     else
       render 'new'
     end
