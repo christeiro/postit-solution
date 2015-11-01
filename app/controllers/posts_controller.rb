@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :vote]
   before_action :require_user, except: [:index, :show]
+  before_action :require_creator, only: [:edit, :update]
 
   def index
     @posts = Post.all.sort_by{ |x| x.total_votes}.reverse
@@ -26,7 +27,6 @@ class PostsController < ApplicationController
 
   def show
     @comment = Comment.new
-    @post.categories = Category.all
   end
 
   def update
@@ -40,12 +40,22 @@ class PostsController < ApplicationController
 
   def vote
     @vote = Vote.create(votable: @post, creator: current_user, vote: params[:vote])
-    if @vote.valid?
-      flash[:notice] = "You've voted!"
-    else
-      flash[:error] = "You've already voted!"
+    
+    respond_to do |format|
+      format.html do
+        if @vote.valid?
+          flash[:notice] = "You've voted!"
+        else
+          flash[:error] = "You've already voted!"
+        end  
+        redirect_to :back
+      end
+      format.js
     end
-    redirect_to :back
+  end
+
+  def require_creator
+    access_denied unless logged_in? && (@post.creator == current_user || current_user.is_admin?)
   end
 
   private 
@@ -54,6 +64,6 @@ class PostsController < ApplicationController
   end
 
   def set_post
-    @post = Post.find(params[:id])
+    @post = Post.find_by(slug: params[:id])
   end
 end

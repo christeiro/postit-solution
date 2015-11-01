@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  include Sluggable
+
   has_many :posts
   has_many :comments
   has_many :votes
@@ -6,4 +8,9 @@ class User < ActiveRecord::Base
   has_secure_password validations: false
   validates :username, presence: true, uniqueness: true
   validates :password, presence: true, length: { minimum: 3 }, on: :create
+  sluggable_column :username
+
+  def is_admin?
+  	self.role == 'admin'
+  end
 end
